@@ -21,6 +21,9 @@ int hoursHigh [] = {
   63, 48
 };
 
+int amPm = 0;
+int amPmPin = 9;
+
 
 void setup() {
   //Start Serial for debuging purposes  
@@ -43,6 +46,7 @@ void shiftOut(int myDataPin, int myClockPin, byte myDataOut) {
   pinMode(myClockPin, OUTPUT);
   pinMode(myDataPin, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(amPmPin, OUTPUT);
 
 //clear everything out just in case to
 //prepare shift register for bit shifting
@@ -95,12 +99,15 @@ void loop(){
          if ((l==0)&&(g==0)){
           continue;
          }
+         if((l==1)&&(g==2)){
+          amPm = 1-amPm;
+         }
          if ((l==1)&&(g==3)){
           break;
          }
         for(int k=0;k<6;k++){
         for(int j=0; j<10; j++){
-        for(int z=0; z<10; z++){
+        for(int z=0; z<60; z++){
         digitalWrite(latchPin, 0);
         shiftOut(dataPin,clockPin, numbers[k]);
         shiftOut(dataPin,clockPin, numbers[j]);
@@ -109,15 +116,14 @@ void loop(){
         shiftOut(dataPin2, clockPin2, hoursHigh[l]);
         shiftOut(dataPin2, clockPin2, hoursLow[g]);
         digitalWrite(latchPin2, 1);
-          
+        digitalWrite(amPmPin, amPm);
         digitalWrite(LED_BUILTIN, HIGH);
-        delay(5);
+        delay(1);
         digitalWrite(LED_BUILTIN, LOW);
-        delay(5);
-        }
-     }   
-     
-     }
-     }
+        delay(1);
+                 }
+             }    
+         }
+      }
    }
 }
